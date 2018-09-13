@@ -1,53 +1,53 @@
 <template>
-    <div>
-      <div class="container-full">
-        <div class="container-left">
-          <div class="container-left-button">
-            <sui-button primary @click="newPublication()">Добавить новость</sui-button>
-          </div>
-          <div>
-            <sui-list divided>
-              <sui-list-item v-for="item in publications" :key="item.id" @click="getPublication(item)">
-                <sui-list-icon name="pencil" vertical-align="middle" class="list-icon"/>
-                <sui-list-content>
-                  <a is="sui-list-header" class="list-header">{{item.name}}</a>
-                  <a is="sui-list-description" class="list-description">{{item.journal}} | {{item.date | moment('DD.MM.YYYY')}}</a>
-                </sui-list-content>
-              </sui-list-item>
-            </sui-list>
-          </div>
+  <div>
+    <div class="header">Публикации</div>
+    <div class="container-full">
+      <div class="container-left">
+        <div class="container-left-button">
+          <sui-button primary @click="newPublication()">Добавить публикацию</sui-button>
         </div>
-        <div class="container-right">
-          <div id="content-menu" v-bind:class="[classContentMenu]">
-            <h2>{{header}}</h2>
-            <div class="content-group">
-              <strong class="label">Название публикации</strong>
-              <sui-input placeholder="Введите название..." v-model="namePublication"></sui-input>
+        <div>
+          <sui-list divided>
+            <sui-list-item v-for="item in publications" :key="item.id" @click="getPublication(item)">
+              <sui-list-icon name="pencil" vertical-align="middle" class="list-icon"/>
+              <sui-list-content>
+                <a is="sui-list-header" class="list-header">{{item.name}}</a>
+                <a is="sui-list-description" class="list-description">{{item.journal}} | {{item.date | moment('DD.MM.YYYY')}}</a>
+              </sui-list-content>
+            </sui-list-item>
+          </sui-list>
+        </div>
+      </div>
+      <div class="container-right">
+        <div id="content-menu" v-bind:class="[classContentMenu]">
+          <h2>{{header}}</h2>
+          <div class="content-group">
+            <strong class="label">Название публикации</strong>
+            <sui-input placeholder="Введите название..." v-model="namePublication"></sui-input>
+          </div>
+          <div class="content-group">
+            <strong class="label">Ссылка на публикацию</strong>
+            <sui-input placeholder="https://..." v-model="linkPublication"></sui-input>
+          </div>
+          <div class="content-group">
+            <strong class="label">Название ресурса</strong>
+            <sui-input placeholder="Например: ПЛН, ГТРК, КурьерЪ,.." v-model="journalPublication"></sui-input>
+          </div>
+          <div class="content-group">
+            <strong class="label">Дата</strong>
+            <div class="ui input">
+              <input id="date-input" type="date" v-model="datePublication">
             </div>
-            <div class="content-group">
-              <strong class="label">Ссылка на публикацию</strong>
-              <sui-input placeholder="https://..." v-model="linkPublication"></sui-input>
-            </div>
-            <div class="content-group">
-              <strong class="label">Название ресурса</strong>
-              <sui-input placeholder="Например: ПЛН, ГТРК, КурьерЪ,.." v-model="journalPublication"></sui-input>
-            </div>
-            <div class="content-group">
-              <strong class="label">Дата</strong>
-              <div class="ui input">
-                <input id="date-input" type="date" v-model="datePublication">
-              </div>
-            </div>
-            <div class="container-right-button">
-              <sui-button positive v-bind:class="[changedButton]" @click="saveChangedPublication()">Сохранить изменения</sui-button>
-              <sui-button color="red" v-bind:class="[changedButton]" @click="deletePublication()">Удалить публикацию</sui-button>
-              <sui-button positive v-bind:class="[addButton]" @click="saveNewPublication()">Добавить публикацию</sui-button>
-            </div>
+          </div>
+          <div class="container-right-button">
+            <sui-button positive v-bind:class="[changedButton]" @click="saveChangedPublication()">Сохранить изменения</sui-button>
+            <sui-button color="red" v-bind:class="[changedButton]" @click="deletePublication()">Удалить публикацию</sui-button>
+            <sui-button positive v-bind:class="[addButton]" @click="saveNewPublication()">Добавить публикацию</sui-button>
           </div>
         </div>
       </div>
-
     </div>
+  </div>
 </template>
 
 <script>
@@ -190,7 +190,7 @@
                   journal: item.journal,
                   id: item._id
                 }
-              });
+              })
             })
         }
       }
@@ -205,9 +205,6 @@
   strong.label {
     padding: 10px;
     font-size: medium;
-  }
-  .content-group {
-
   }
   .container-full {
     display: flex;
@@ -237,7 +234,12 @@
     text-align: center;
     margin: 5px 0 10px 0;
   }
-
+  .header {
+    text-align: center;
+    font-weight: bolder;
+    color: #4183c4;
+    margin-bottom: 10px;
+  }
   .list-icon {
     padding: 10px 0;
   }
