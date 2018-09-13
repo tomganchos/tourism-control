@@ -1,24 +1,23 @@
 <template>
     <div>
-
-      <div style="display: flex; flex-direction: row; justify-content: center">
-        <div style="width: 450px; height: 600px; overflow-y: scroll; padding: 5px; background-color: rgba(33, 133, 208, 0.1); border: 2px solid rgba(33, 133, 208, 0.2); border-radius: 5px 0 0 5px;">
-          <div style="text-align: center; margin: 5px 0 10px 0">
+      <div class="container-full">
+        <div class="container-left">
+          <div class="container-left-button">
             <sui-button primary @click="newPublication()">Добавить новость</sui-button>
           </div>
           <div>
             <sui-list divided>
               <sui-list-item v-for="item in publications" :key="item.id" @click="getPublication(item)">
-                <sui-list-icon name="pencil" vertical-align="middle" style="padding: 10px 0"/>
+                <sui-list-icon name="pencil" vertical-align="middle" class="list-icon"/>
                 <sui-list-content>
-                  <a is="sui-list-header" style="text-align: left; padding: 3px 0">{{item.name}}</a>
-                  <a is="sui-list-description" style="text-align: left; padding: 3px 0">{{item.journal}} | {{item.date | moment('DD.MM.YYYY')}}</a>
+                  <a is="sui-list-header" class="list-header">{{item.name}}</a>
+                  <a is="sui-list-description" class="list-description">{{item.journal}} | {{item.date | moment('DD.MM.YYYY')}}</a>
                 </sui-list-content>
               </sui-list-item>
             </sui-list>
           </div>
         </div>
-        <div style="width: 450px; background-color: rgba(33, 133, 208, 0.1); border: 2px solid rgba(33, 133, 208, 0.2); border-radius: 0 5px 5px 0;">
+        <div class="container-right">
           <div id="content-menu" v-bind:class="[classContentMenu]">
             <h2>{{header}}</h2>
             <div class="content-group">
@@ -39,7 +38,7 @@
                 <input id="date-input" type="date" v-model="datePublication">
               </div>
             </div>
-            <div style="text-align: center; margin: 5px 0 10px 0; ">
+            <div class="container-right-button">
               <sui-button positive v-bind:class="[changedButton]" @click="saveChangedPublication()">Сохранить изменения</sui-button>
               <sui-button color="red" v-bind:class="[changedButton]" @click="deletePublication()">Удалить публикацию</sui-button>
               <sui-button positive v-bind:class="[addButton]" @click="saveNewPublication()">Добавить публикацию</sui-button>
@@ -48,8 +47,6 @@
         </div>
       </div>
 
-      <!--<div>Публикации</div>-->
-      <!--<div v-for="item in publications">{{item.name}}</div>-->
     </div>
 </template>
 
@@ -60,7 +57,7 @@
   const host = 'http://localhost:3012';
 
     export default {
-        name: "Publications",
+      name: "Publications",
       data() {
           return {
             publications: [],
@@ -211,6 +208,46 @@
   }
   .content-group {
 
+  }
+  .container-full {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .container-left {
+    width: 450px;
+    height: 600px;
+    overflow-y: scroll;
+    padding: 5px;
+    background-color: rgba(33, 133, 208, 0.1);
+    border: 2px solid rgba(33, 133, 208, 0.2);
+    border-radius: 5px 0 0 5px;
+  }
+  .container-left-button {
+    text-align: center;
+    margin: 5px 0 10px 0;
+  }
+  .container-right {
+    width: 450px;
+    background-color: rgba(33, 133, 208, 0.1);
+    border: 2px solid rgba(33, 133, 208, 0.2);
+    border-radius: 0 5px 5px 0;
+  }
+  .container-right-button {
+    text-align: center;
+    margin: 5px 0 10px 0;
+  }
+
+  .list-icon {
+    padding: 10px 0;
+  }
+  .list-header {
+    text-align: left;
+    padding: 3px 0;
+  }
+  .list-description {
+    text-align: left;
+    padding: 3px 0;
   }
   #content-menu.none {
     display: none;
