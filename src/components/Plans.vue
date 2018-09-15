@@ -44,7 +44,7 @@
             <div class="ui input">
               <input id="date-input" type="date" v-model="datePlan">
             </div>
-            <div class="date-description">*Описание о дате</div>
+            <div class="date-description">*Документы (не на месяц) сортируются по дате. Если план на месяц, то нужно указать нужный месяц (день не важен)</div>
           </div>
           <div class="container-right-button">
             <sui-button positive v-bind:class="[changedButton]" @click="saveChangedPlan()">Сохранить изменения</sui-button>
@@ -113,6 +113,34 @@
           this.datePlan = moment(item.date).format('YYYY-MM-DD');
           this.monthPlan = item.month;
           this.classContentMenu = '';
+        },
+        saveChangedPlan() {
+          let body = {
+            id: this.idPlan,
+            name: this.namePlan,
+            doc: this.docPlan,
+            date: moment(this.datePlan).format('YYYY-MM-DDTHH:mm:SS.sss'),
+            month: this.monthPlan
+          };
+          axios.put(host + '/publications', body, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json'
+            }
+          })
+            .then((response) => {
+              console.log(response);
+              this.getPublications();
+              this.idPlan = '';
+              this.namePlan = '';
+              this.docPlan = '';
+              this.datePlan = '';
+              this.monthPlan = '';
+              this.classContentMenu = 'none';
+            })
+            .catch((error) => {
+              console.log(error);
+            })
         }
       }
     }
