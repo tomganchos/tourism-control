@@ -1,88 +1,66 @@
 <template>
-    <div class="news-panel">
 
-
-      <container>
-        <grid vertical="top" :rwd="{compact: 'stack'}">
-          <grid-item size="1/2">
-
-            <sui-segment>
-              <div style="text-align: center; margin-bottom: 10px">
-                <sui-button primary>Добавить новость</sui-button>
-              </div>
-
-              <div>
-                <sui-list divided relaxed>
-                  <sui-list-item v-for="item in docs" :key="item.id">
-                    <sui-list-icon name="pen square" size="large" vertical-align="middle" />
-                    <sui-list-content>
-                      <a is="sui-list-header">{{item.name}}</a>
-                      <a is="sui-list-description">{{item.date}}</a>
-                    </sui-list-content>
-                  </sui-list-item>
-                </sui-list>
-              </div>
-
-              <div style="text-align: center; margin-top: 10px">
-                <sui-button animated="vertical" primary>
-                  <sui-button-content visible>Загрузить ещё</sui-button-content>
-                  <sui-button-content hidden>
-                    <sui-icon name="down arrow" />
-                  </sui-button-content>
-                </sui-button>
-              </div>
-            </sui-segment>
-          </grid-item>
-
-          <grid-item size="1/2">
-            <sui-segment>
-              <div>
-                <div class="name-block">
-                  <h3>Название новости</h3>
-                  <sui-input class="input-name" v-model="name" placeholder="Введите название.." />
-                </div>
-                <div class="date-block">
-                  <h3>Дата</h3>
-                  <input class="input-date" v-model="date" type="date" placeholder="Введите название..">
-                </div>
-                <div class="text-block">
-                  <h3>Текст новости</h3>
-                  <textarea class="input-text" v-model="text"></textarea>
-                </div>
-                <div class="link-block">
-                  <h3>Ссылки</h3>
-                  <div>
-                    <sui-button primary>Добавить документ</sui-button>
-                    <sui-button negative>Удалить</sui-button>
-                  </div>
-                </div>
-                <div class="image-block">
-                  <h3>Ссылка на изображение</h3>
-                  <div>Изображение должно быть горизонтальным</div>
-                  <sui-input class="input-image" v-model="img" placeholder="Ссылка.." />
-                </div>
-                <div class="result-block">
-                  <sui-checkbox class="checkbox-result" v-model="result" label="Итоги" />
-                  <sui-dropdown
-                    placeholder="Отдел"
-                    selection
-                    :options="listSections"
-                    v-model="current"
-                  />
-                </div>
-                <div class="buttons">
-                  <sui-button primary v-on:click="addNews()">Отправить новость</sui-button>
-                </div>
-              </div>
-            </sui-segment>
-          </grid-item>
-        </grid>
-      </container>
-
+  <div class="container">
+    <div class="container-scroll">
+      <div class="container-scroll__add-button">
+        <sui-button primary>Добавить новость</sui-button>
+      </div>
+      <div class="container-scroll__list">
+        <div v-for="item in docs" class="news" :key="item.id">
+          <div class="news-name">
+            {{ item.title}}
+          </div>
+          <div class="news-date">
+            {{ getDate(item.date) }}
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="container-info">
+      <div>
+        <div class="name-block">
+          <h3>Название новости</h3>
+          <sui-input class="input-name" v-model="name" placeholder="Введите название.." />
+        </div>
+        <div class="date-block">
+          <h3>Дата</h3>
+          <input class="input-date" v-model="date" type="date" placeholder="Введите название..">
+        </div>
+        <div class="text-block">
+          <h3>Текст новости</h3>
+          <textarea class="input-text" v-model="text"></textarea>
+        </div>
+        <div class="link-block">
+          <h3>Ссылки</h3>
+          <div>
+            <sui-button primary>Добавить документ</sui-button>
+            <sui-button negative>Удалить</sui-button>
+          </div>
+        </div>
+        <div class="image-block">
+          <h3>Ссылка на изображение</h3>
+          <div>Изображение должно быть горизонтальным</div>
+          <sui-input class="input-image" v-model="img" placeholder="Ссылка.." />
+        </div>
+        <div class="result-block">
+          <sui-checkbox class="checkbox-result" v-model="result" label="Итоги" />
+          <sui-dropdown
+            placeholder="Отдел"
+            selection
+            :options="listSections"
+            v-model="current"
+          />
+        </div>
+        <div class="buttons">
+          <sui-button primary v-on:click="addNews()">Отправить новость</sui-button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+  import moment from 'moment'
   import axios from 'axios'
     export default {
         name: "News",
@@ -116,58 +94,54 @@
       created() {
         axios.get("http://localhost:3012/news")
           .then(response => {
-            this.docs = response.data.map((item) => {
-              return {
-                name: item.name,
-                text: item.text,
-                date: item.date
-              }
-            });
+            this.docs = response.data
             console.log(this.docs)
           })
       },
       methods: {
-          addNews: function () {
+        addNews: function () {
 
-            if (this.name !== '' && this.date !== '') {
-              axios.post('http://localhost:3012/news', {
-                    name: this.name,
-                    date: this.date + 'T00:00:00.000',
-                    text: this.text,
-                    selection: this.section
-                    }).then((response) => {
-                console.log(response);
-              });
-              axios.post("http://localhost:3012/news", '', {
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+          if (this.name !== '' && this.date !== '') {
+            axios.post('http://localhost:3012/news', {
                   name: this.name,
                   date: this.date + 'T00:00:00.000',
                   text: this.text,
                   selection: this.section
-                  })
-              }).then(function (response) {
-                console.log(response.data);
-                console.log(response.status);
-              }).catch(function (error) {
-                console.log(error.status);
-                if (response.status === 401) {
-                  console.log(401);
-                }
-              })
-            } else {
-              console.log('else');
-            }
-            console.log(this.name);
-            console.log(this.date);
-            console.log(this.text);
-            console.log(this.img);
-            console.log(this.result);
-            console.log(this.current);
+                  }).then((response) => {
+              console.log(response);
+            });
+            axios.post("http://localhost:3012/news", '', {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: this.name,
+                date: this.date + 'T00:00:00.000',
+                text: this.text,
+                selection: this.section
+                })
+            }).then(function (response) {
+              console.log(response.data);
+              console.log(response.status);
+            }).catch(function (error) {
+              console.log(error.status);
+              if (response.status === 401) {
+                console.log(401);
+              }
+            })
+          } else {
+            console.log('else');
           }
-
+          console.log(this.name);
+          console.log(this.date);
+          console.log(this.text);
+          console.log(this.img);
+          console.log(this.result);
+          console.log(this.current);
+        },
+        getDate(date) {
+          return moment(date).locale('ru').format('DD MMMM YYYY')
+        }
       }
     }
 </script>
@@ -224,5 +198,42 @@
 
   h3 {
     margin-bottom: 5px;
+  }
+
+  .container {
+    height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+  }
+
+  .container-scroll {
+    width: 400px;
+  }
+
+  .container-scroll__add-button {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
+  .container-scroll__list {
+    height: calc(100vh - 116px);
+    overflow-y: scroll;
+  }
+  .container-info {
+    width: 600px;
+  }
+
+  .news {
+    display: flex;
+    flex-direction: column;
+    padding: 5px 10px;
+  }
+  .news:hover {
+    background-color: #2185d0;
+    color: #fff;
+    cursor: pointer;
+  }
+  .news-name {
+    font-weight: bold;
   }
 </style>
