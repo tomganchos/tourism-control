@@ -10,6 +10,15 @@
       <sui-menu-item>
         <router-link to="publications">Публикации</router-link>
       </sui-menu-item>
+      <sui-menu-item>
+        <router-link to="documents">Документы</router-link>
+      </sui-menu-item>
+      <sui-menu-item>
+        <router-link to="education">Образование</router-link>
+      </sui-menu-item>
+      <sui-menu-item>
+        <router-link to="trips">Экскурсии</router-link>
+      </sui-menu-item>
     </sui-menu>
     <router-view/>
   </div>
@@ -17,8 +26,10 @@
 
 <script>
 
+import InfoPanel from "./components/InfoPanel";
 export default {
   name: 'App',
+  components: {InfoPanel},
 }
 
 </script>

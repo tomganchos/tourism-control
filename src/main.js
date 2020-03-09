@@ -9,15 +9,12 @@ import VueMoment from 'vue-moment'
 
 Vue.config.productionTip = false;
 
-/* eslint-disable no-new */
 
 Vue.use(SuiVue);
 Vue.use(VueFractionGrid);
 Vue.use(VueMoment);
 
 new Vue({
-  el: '#app',
   router,
-  components: { App },
-  template: '<App/>'
-});
+  render: h => h(App),
+}).$mount('#app');
