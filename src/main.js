@@ -4,15 +4,11 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import SuiVue from 'semantic-ui-vue';
-import VueFractionGrid from 'vue-fraction-grid'
-import VueMoment from 'vue-moment'
 
 Vue.config.productionTip = false;
 
 
 Vue.use(SuiVue);
-Vue.use(VueFractionGrid);
-Vue.use(VueMoment);
 
 new Vue({
   router,

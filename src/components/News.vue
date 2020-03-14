@@ -38,7 +38,7 @@
         <div class="block">
           <div class="label">Документы</div>
           <div class="block-list">
-            <div v-for="link in links" class="block-item">
+            <div v-for="link in links" class="block-item" :key="link">
               <sui-input class="block-item__title"
                          placeholder="Название документа"
                          v-model="link.title" size="mini"/>
