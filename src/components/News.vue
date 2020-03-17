@@ -3,10 +3,10 @@
   <div class="container">
     <div class="container-scroll">
       <div class="container-scroll__add-button">
-        <sui-button primary>Добавить новость</sui-button>
+        <sui-button primary @click="addNews()">Добавить новость</sui-button>
       </div>
       <div class="container-scroll__list">
-        <div v-for="item in docs" class="news" :key="item.id">
+        <div v-for="item in docs" class="news" :key="item.id" @click="handleDoc(item)">
           <div class="news-name">
             {{ item.title}}
           </div>
@@ -20,25 +20,25 @@
       <div class="container-info__blocks">
         <div class="block">
           <div class="label">Название новости</div>
-          <sui-input v-model="title" size="mini"/>
+          <sui-input v-model="current.title" size="mini"/>
         </div>
         <div class="block">
           <div class="label">Дата новости</div>
-          <sui-input v-model="date" type="date" size="mini"/>
+          <sui-input v-model="current.date" type="date" size="mini"/>
         </div>
         <div class="block">
           <div class="label">Текст новости</div>
-          <textarea class="input-text" v-model="description"/>
+          <textarea class="input-text" v-model="current.description"/>
         </div>
 
         <div class="block">
-          <sui-checkbox label="Итоги" v-model="result"/>
+          <sui-checkbox label="Итоги" v-model="current.results"/>
         </div>
 
         <div class="block">
           <div class="label">Документы</div>
           <div class="block-list">
-            <div v-for="link in links" class="block-item" :key="link">
+            <div v-for="link in current.links" class="block-item" :key="link.link">
               <sui-input class="block-item__title"
                          placeholder="Название документа"
                          v-model="link.title" size="mini"/>
@@ -47,8 +47,8 @@
                          v-model="link.link" size="mini"/>
             </div>
             <div class="block-button">
-              <sui-button primary @click="addDoc()">Добавить документ</sui-button>
-              <sui-button v-if="links.length !== 0" negative
+              <sui-button primary size="mini" @click="addDoc()">Добавить документ</sui-button>
+              <sui-button v-if="current.links && current.links.length !== 0" negative size="mini"
                           @click="removeDoc()">Убрать</sui-button>
             </div>
           </div>
@@ -56,12 +56,27 @@
 
         <div class="block">
           <div class="label">Изображения</div>
-          <sui-input type="file" multiple v-model="images"/>
+<!--          <sui-input type="file" multiple v-model="current.images"/>-->
+          <div class="block-list">
+            <div v-for="image in current.images" class="block-item" :key="image.preview">
+              <sui-input class="block-item__title"
+                         placeholder="Превью"
+                         v-model="image.preview" size="mini"/>
+              <sui-input class="block-item__link"
+                         placeholder="Полная"
+                         v-model="image.full" size="mini"/>
+            </div>
+            <div class="block-button">
+              <sui-button primary size="mini" @click="addImage()">Добавить изображение</sui-button>
+              <sui-button v-if="current.links && current.links.length !== 0" negative size="mini"
+                          @click="removeImage()">Убрать</sui-button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="container-info__buttons">
         <sui-button negative v-on:click="removeNews()">Удалить новость</sui-button>
-        <sui-button primary v-on:click="addNews()">Сохранить новость</sui-button>
+        <sui-button primary v-on:click="saveNews()">Сохранить новость</sui-button>
       </div>
     </div>
   </div>
@@ -74,30 +89,16 @@
         name: "News",
       data() {
           return {
-
-            title: '',
-            date: '',
-            description: '',
             docs: [],
-            links: [],
-            images: null,
-            result: false,
-            section: this.current,
-
-            current: null,
-            listSections: [{
-              text: 'Краеведение',
-              value: 'localHistory',
-            }, {
-              text: 'Туризм',
-              value: 'tourism',
-            }, {
-              text: 'Музейная работа',
-              value: 'museum',
-            }, {
-              text: 'Экскурсионная работа',
-              value: 'trip',
-            }],
+            current: {
+              id: null,
+              title: '',
+              date: '',
+              description: '',
+              links: [],
+              images: [],
+              results: false,
+            },
           }
       },
       created() {
@@ -109,6 +110,17 @@
       },
       methods: {
         addNews: function () {
+
+          this.current = {
+            id: null,
+            title: '',
+            date: '',
+            description: '',
+            links: [],
+            images: [],
+            results: false,
+          }
+
 
           // if (this.name !== '' && this.date !== '') {
           //   axios.post('http://localhost:3012/news', {
@@ -141,27 +153,63 @@
           // } else {
           //   console.log('else');
           // }
-          console.log(this.title);
-          console.log(this.date);
-          console.log(this.description);
-          console.log(this.images);
-          console.log(this.result);
+
           console.log(this.current);
         },
         removeNews: function() {
           console.log('remove')
         },
+        saveNews: function() {
+          console.log(this.current)
+
+          if (this.name !== '' && this.date !== '') {
+            axios.post("http://localhost:3012/news", JSON.stringify({
+              title: this.current.title,
+              date: moment(this.current.date).format('YYYY-MM-DDTHH:mm:ss.SSS'),
+              description: this.current.description,
+              results: this.current.results,
+              links: this.current.links,
+              images: this.current.images
+            })).then(function (response) {
+              console.log(response.data);
+              console.log(response.status);
+            }).catch(function (error) {
+              console.log(error);
+            })
+          } else {
+            console.log('else');
+          }
+        },
         addDoc() {
-          this.links.push({
+          this.current.links.push({
             title: '',
             link: ''
           })
         },
         removeDoc() {
-          this.links.pop()
+          this.current.links.pop()
+        },
+        addImage() {
+          this.current.images.push({
+            title: '',
+            link: ''
+          })
+        },
+        removeImage() {
+          this.current.images.pop()
         },
         getDate(date) {
           return moment(date).locale('ru').format('DD MMMM YYYY')
+        },
+        handleDoc(item) {
+          console.log(item)
+          this.current.id = item._id
+          this.current.title = item.title
+          this.current.date = moment(item.date).format('YYYY-MM-DD')
+          this.current.description = item.description
+          this.current.results = item.results
+          this.current.links = item.links ? item.links : []
+          this.current.images = item.images ? item.images: []
         }
       }
     }
@@ -178,7 +226,7 @@
   .container {
     height: calc(100vh - 60px);
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .container-scroll {
